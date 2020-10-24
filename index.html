@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title> Pronounce app</title>
+
+  <!-- prevents page stored in cache-->
+  <META HTTP-EQUIV="Pragma" CONTENT="no-cache"> 
+  <META HTTP-EQUIV="Expires" CONTENT="-1"> 
+  <meta http-equiv="Cache-Control" content="no-store" /> 
+
+  <!-- Use correct character set. -->
+  <meta charset="utf-8"> 
+  <!-- Tell IE to use the latest, best version-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">  
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">     -->
+	<style type="text/css">
+		#cv1 {
+			background: #f0f0f0;
+		}
+	</style>
+
+<script type="text/javascript" src="pre_main.js"></script>
+
+</head>
+<body>
+	<h1 style="text-align:center"> title </h1>
+
+	<div class="row">
+		<h3> pourquoi </h3>
+		<canvas id="cv1" width="600" height="400">
+			
+		</canvas>
+		<br>
+		<button type="" id="play1" onclick="init()"></button>
+
+
+		<!-- <audio controls> -->
+			<!-- window.location.hostname = localhost-->
+		  <!-- <source src="http://localhost/front/pronounce_app/0000.wav" type="audio/wav" crossorigin="anonymous" > -->
+	  	  <!-- Your browser does not support the audio element. -->
+		<!-- </audio> -->
+
+<!--     <button type="" id="play2" onclick="playAndPaint('http://localhost/front/pronounce_app/0000.wav')"></button>
+ -->    <button type="" id="play2" onclick="playAndPaint()"></button>
+
+
+  <!-- <button type="" id="play2" onclick="init2('https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3')"></button> -->
+
+<!-- 		<audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous" ></audio>
+ -->
+	</div>
+
+<div class="row">
+<h3> here chart FFT </h3>
+<canvas id="myChart" width="600" height="400" ></canvas>
+</div>
+
+</body>
+<script type="text/javascript" src="main.js"></script>
+<script type="text/javascript" src="slice.js"></script>
+<script type="text/javascript" src="utils.js"></script>
+</html>
