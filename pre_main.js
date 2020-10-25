@@ -21,16 +21,7 @@ async function playAndPaint(){
     //2.  decode response audio data, generating buffer
     audioCtx.decodeAudioData(request.response, async function(buffer) {
 
-      // // 0. Testing slicing, it's ok
-      // var begin = 8000
-      // var end = begin + 100
-      // audioBufferSlice(buffer, begin, end, function(error, slicedAudioBuffer) {
-      //   playBuffer(slicedAudioBuffer, function(){ console.log('repoduced')})
-      //   console.log(slicedAudioBuffer)
-      // });
-
-
-      //3.A slice in sub-bufers of delta miliseconds each
+      //3.A slice in sub-bufers extract cut indexes for that
       var delta = 10 //2 25 50 mili secs
       var duration = Math.floor(buffer.duration * 1000) // mili secs
       var limit = 10*1000//miliseconds
@@ -40,7 +31,6 @@ async function playAndPaint(){
       }
 
       //3.B Process each delta, get subbuffer array
-
       var x = 0 
       var sr = buffer.sampleRate
       var fft_size = 8192 // 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768
@@ -57,48 +47,37 @@ async function playAndPaint(){
 
             // 4. get the FFT for the sub-buffer
             getFFT(slicedAudioBuffer, function(ffts){
-              //window.requestAnimationFrame(function(){}) // not really needed
+              //window.requestAnimationFrame(getFFT) // not really needed
               //console.log(ffts)
 
               //5. paint column for this freqs
-              const KEEP_FREQS = 1 // 0.1 first 10% of spectrum = 0-2k
+              const KEEP_FREQS = 0.7 // 0.1 first 10% of spectrum = 0-2k
               const LEN = ffts.length * KEEP_FREQS; // 1024 *0.5 = 512
 
-              var h = 0//H / LEN; // 400/512
-              var hMax =  melLog(2+ (LEN*sr_f) -1) //Math.log10(2+LEN-1)
-              
-              for (let k = 0; k < 3; k++) { //k<5
-                x += 1
-                for (let j = 0; j < LEN; j++) {
-                  let rat = ffts[j] / 255;
-                  // we need from 40 to 280 in hsl
-                  let hue = 30 + (300*rat)
-                  //let hue = Math.round((rat * 120) + 280 % 360); // from 280 until 400, % from 0 - 40
-                  let sat = '100%';
-                  let lit = 10 + (70 * rat) + '%'; // 10-80 %
+              var h = 0
+              var hMax =  melLog(2+ (LEN*sr_f) -1)
+              var delta_x = 5
 
-                  ctx.beginPath();
-                  ctx.strokeStyle = `hsl(${hue}, ${sat}, ${lit})`;
-                  ctx.moveTo(x, H - h);//(x, H - (j * h));
-                  h =  (melLog(2+ (j*sr_f) -1)/hMax)*(H-1) //(Math.log10(2+j)/hMax)*(H-1)
-                  ctx.lineTo(x, H - h);//(x, H - (j * h + h));
-                  ctx.stroke();
-                }
+              for (let j = 0; j < LEN; j++) {
+                let rat = ffts[j] / 255;
+                // we need from 40 to 280 in hsl
+                let hue = (1*360*rat)// 30 + (300*rat) //30 -330
+                //let hue = Math.round((rat * 120) + 280 % 360); // from 280 until 400, % from 0 - 40
+                let sat = '100%';
+                let lit = 10 + (70 * rat) + '%'; // 10-80 %
+
+                var last_h = h
+                h =  (melLog(2+ (j*sr_f) -1)/hMax)*(H-1) //(value between 0 and H-1
+                ctx.fillStyle = `hsl(${hue}, ${sat}, ${lit})`;
+                ctx.fillRect(x, H-last_h, (x)- x+delta_x, (H-last_h)- H-h )
               }
+              x += delta_x
             }, fft_size);
-
-
 
           } // else
         });
         await sleep(delta);
       }
-
-      // and do FFT and plot
-
-
-
-
 
 
 

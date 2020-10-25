@@ -43,7 +43,6 @@ function playBuffer(buffer, callback){
   analyserNode.connect(audioCtx.destination)
 
   sourceNode.start(0); //play
-
   sourceNode.onended = function(event) {
     callback();
   }
@@ -57,7 +56,7 @@ function getFFT(buffer, callback, fftSize=2048){//2048
   sourceNode.buffer = buffer;
   //console.log(sourceNode.buffer.getChannelData(0)) //raw PCM data
   sourceNode.connect(analyserNode);
-  analyserNode.connect(audioCtx.destination)
+  analyserNode.connect(audioCtx.destination) // to output sound on speakers
 
   sourceNode.start(0); //play
   //onened, buffer will be ready to be read
