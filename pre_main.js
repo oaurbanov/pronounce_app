@@ -1,7 +1,12 @@
 const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
+function melLog(f){
+  return 2595*Math.log10(1+(f/500))
+}
+
 async function playAndPaint(){
-  url = 'http://localhost/front/pronounce_app/scale.wav' //scale(7), 0000(30)
+  // url = 'http://localhost/front/pronounce_app/audio/pourquoi/0000.wav' //scale(7), 0000(0.7), redhot(30)
+  url = 'http://localhost/front/pronounce_app/0000.wav' //scale(7), 0000(0.7), redhot(30)
   var request = new XMLHttpRequest();
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
@@ -23,64 +28,61 @@ console.log('iiiittt')
       // });
 
 
-
       //3.A slice in sub-bufers of delta miliseconds each
-      var buffArray = new Array()
-      var delta = 10 //25 50 mili secs
+      var delta = 10 //2 25 50 mili secs
       var duration = Math.floor(buffer.duration * 1000) // mili secs
       var limit = 10*1000//miliseconds
       var cuts = new Array()
       for (var i=0; i+delta<duration && i<limit; i+=delta){ // left over is dropped
         cuts.push(i)
-        // console.log('i: ' + i)
-        // audioBufferSlice(buffer, i, i+delta, function(error, slicedAudioBuffer) {
-        //   if (error) {
-        //     console.error(error);
-        //   } else {
-        //     console.log(buffer)
-        //     // buffArray.push(buffer)
-        //   }
-        // });
       }
 
+      //3. Process each delta, get subbuffer array
+
+      var x = 0 
+      var sr = buffer.sampleRate
+      var fft_size = 8192 // 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768
+      var sr_f = sr/fft_size
       for (const cut of cuts){
         audioBufferSlice(buffer, cut, cut+delta, function(error, slicedAudioBuffer) {
           if (error) {
             console.error(error);
           } else {
-            console.log(cut)
-            console.log(slicedAudioBuffer)
-            //playBuffer(slicedAudioBuffer, function(){ console.log('repoduced')})
-            // buffArray.push(slicedAudioBuffer)
 
-
+            // console.log(cut)
+            // console.log(slicedAudioBuffer)
+            // playBuffer(slicedAudioBuffer, function(){ console.log('repoduced')})
 
             // 4. get the FFT for the sub-buffer
             getFFT(slicedAudioBuffer, function(ffts){
-              window.requestAnimationFrame(function(){})
-              console.log(ffts)
-              // paint column for this freqs
+              //window.requestAnimationFrame(function(){})
+              //console.log(ffts)
 
-              const KEEP_FREQS = 0.5 // 0.1 first 10% of spectrum = 0-2k
-              const LEN = ffts.length * KEEP_FREQS;
-              const h = H / LEN;
-              for (let k = 0; k < 3; k++) {
-                ROW=ROW+1
+              // paint column for this freqs
+              const KEEP_FREQS = 1 // 0.1 first 10% of spectrum = 0-2k
+              const LEN = ffts.length * KEEP_FREQS; // 1024 *0.5 = 512
+
+              var h = 0//H / LEN; // 400/512
+              var hMax =  melLog(2+ (LEN*sr_f) -1) //Math.log10(2+LEN-1)
+              
+              for (let k = 0; k < 3; k++) { //k<5
+                x += 1
                 for (let j = 0; j < LEN; j++) {
-                  const x = ROW//W - 1;
                   let rat = ffts[j] / 255;
                   // we need from 40 to 280 in hsl
-                  let hue = Math.round((rat * 120) + 280 % 360); // from 280 until 400, % from 0 - 40
+                  let hue = 30 + (300*rat)
+                  //let hue = Math.round((rat * 120) + 280 % 360); // from 280 until 400, % from 0 - 40
                   let sat = '100%';
                   let lit = 10 + (70 * rat) + '%'; // 10-80 %
                   ctx.beginPath();
                   ctx.strokeStyle = `hsl(${hue}, ${sat}, ${lit})`;
-                  ctx.moveTo(x, H - (j * h));
-                  ctx.lineTo(x, H - (j * h + h));
+                  ctx.moveTo(x, H - h);//(x, H - (j * h));
+                  h =  (melLog(2+ (j*sr_f) -1)/hMax)*(H-1) //(Math.log10(2+j)/hMax)*(H-1)
+                  ctx.lineTo(x, H - h);//(x, H - (j * h + h));
                   ctx.stroke();
                   }
                 }
-            });
+            }, fft_size);
 
 
 
@@ -89,62 +91,10 @@ console.log('iiiittt')
         await sleep(delta);
       }
 
+      // and do FFT and plot
 
 
 
-      // //3. slice in sub-bufers of delta miliseconds each
-      // var delta = 100 //mili secs
-      // var duration = Math.floor(buffer.duration * 1000) // mili secs
-      // for (var i=0; i+delta<duration && i<10000; i+=delta){ // left over is dropped
-      //   audioBufferSlice(buffer, i, i+delta, function(error, slicedAudioBuffer) {
-      //     if (error) {
-      //       console.error(error);
-      //     } else {
-
-      //       console.log('i: ' + i)            
-      //       console.log(slicedAudioBuffer)
-
-      //       playBuffer(slicedAudioBuffer, function(){
-      //         console.log('repoduced')
-      //       });
-      //       await sleep(1000);
-
-      //       // sleep(2000).then(() => {
-      //       //   playBuffer(slicedAudioBuffer, function(){
-      //       //     console.log('repoduced')
-      //       //   });
-      //       // });
-
-            
-      //       //4. get the FFT for the sub-buffer
-
-      //       // getFFT(slicedAudioBuffer, function(ffts){
-      //       //   window.requestAnimationFrame(function(){})
-      //       //   console.log(ffts)
-      //       //   // paint column for this freqs
-
-      //       //   const LEN = ffts.length;
-      //       //   const h = H*1 / LEN;
-      //       //   ROW=ROW+1
-      //       //   const x = ROW//W - 1;
-      //       //   console.log('x: ' + x)
-      //       //   for (let j = 0; j < LEN/1; j++) {
-      //       //     let rat = ffts[j] / 255;
-      //       //     // we need from 40 to 280 in hsl
-      //       //     let hue = Math.round((rat * 120) + 280 % 360); // from 280 until 400, % from 0 - 40
-      //       //     let sat = '100%';
-      //       //     let lit = 10 + (70 * rat) + '%'; // 10-80 %
-      //       //     ctx.beginPath();
-      //       //     ctx.strokeStyle = `hsl(${hue}, ${sat}, ${lit})`;
-      //       //     ctx.moveTo(x, H - (j * h));
-      //       //     ctx.lineTo(x, H - (j * h + h));
-      //       //     ctx.stroke();
-      //       //   }
-
-      //       // });
-      //     }
-      //   });
-      // }
 
 
 

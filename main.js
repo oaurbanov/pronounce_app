@@ -9,8 +9,8 @@ const ctx = canvas.getContext('2d');
 
 
 
-ctx.fillStyle = 'hsl(280, 100%, 10%)'; // 280= purple, saturation, light
-ctx.fillRect(0, 0, W, H);
+// ctx.fillStyle = 'hsl(280, 100%, 10%)'; // 280= purple, saturation, light
+// ctx.fillRect(0, 0, W, H);
 
 
 // ctx.fillStyle = 'red';
@@ -127,7 +127,7 @@ var ROW = 0
 
 
 
-function playBuffer(buffer, callback, fftSize=2048){//2048
+function playBuffer(buffer, callback){
   sourceNode = audioCtx.createBufferSource();
   sourceNode.buffer = buffer;
   //console.log(sourceNode.buffer.getChannelData(0)) //raw PCM data
