@@ -1,5 +1,6 @@
 const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
+
 function melLog(f){
   return 2595*Math.log10(1+(f/500))
 }
@@ -11,9 +12,10 @@ async function playAndPaint(){
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
 
-console.log('wwwwwaaa')
+  // testing await method woorks
+  console.log('wwwwwaaa')
   await sleep(1000)
-console.log('iiiittt')
+  console.log('iiiittt')
 
   request.onload = async function() {
     //2.  decode response audio data, generating buffer
@@ -37,7 +39,7 @@ console.log('iiiittt')
         cuts.push(i)
       }
 
-      //3. Process each delta, get subbuffer array
+      //3.B Process each delta, get subbuffer array
 
       var x = 0 
       var sr = buffer.sampleRate
@@ -55,10 +57,10 @@ console.log('iiiittt')
 
             // 4. get the FFT for the sub-buffer
             getFFT(slicedAudioBuffer, function(ffts){
-              //window.requestAnimationFrame(function(){})
+              //window.requestAnimationFrame(function(){}) // not really needed
               //console.log(ffts)
 
-              // paint column for this freqs
+              //5. paint column for this freqs
               const KEEP_FREQS = 1 // 0.1 first 10% of spectrum = 0-2k
               const LEN = ffts.length * KEEP_FREQS; // 1024 *0.5 = 512
 
@@ -74,14 +76,15 @@ console.log('iiiittt')
                   //let hue = Math.round((rat * 120) + 280 % 360); // from 280 until 400, % from 0 - 40
                   let sat = '100%';
                   let lit = 10 + (70 * rat) + '%'; // 10-80 %
+
                   ctx.beginPath();
                   ctx.strokeStyle = `hsl(${hue}, ${sat}, ${lit})`;
                   ctx.moveTo(x, H - h);//(x, H - (j * h));
                   h =  (melLog(2+ (j*sr_f) -1)/hMax)*(H-1) //(Math.log10(2+j)/hMax)*(H-1)
                   ctx.lineTo(x, H - h);//(x, H - (j * h + h));
                   ctx.stroke();
-                  }
                 }
+              }
             }, fft_size);
 
 
