@@ -65,7 +65,7 @@ async function playAndPaint(){
       let ffts = await extractFFT(subbuffer,fft_size)
       console.log(ffts)
 
-      const paintColumn = (x, ffts, sr, fft_size) =>
+      const paintColumn = (x, delta_x, ffts, sr, fft_size) =>
         new Promise( (resolve) => {
           var sr_f = sr/fft_size
 
@@ -90,7 +90,7 @@ async function playAndPaint(){
           }
           resolve()
         });
-      paintColumn(x, ffts, subbuffer.sampleRate, fft_size)
+      paintColumn(x, delta_x, ffts, subbuffer.sampleRate, fft_size)
       x += delta_x
 
     }
