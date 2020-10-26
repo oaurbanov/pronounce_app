@@ -23,7 +23,6 @@ const ctx2 = cv2.getContext('2d')
 // ctx.fillRect(200, 20, 150, 100);
 
 
-
 // Get AudioContext singleton
 var audioCtx = null;
 var analyserNode = null;
@@ -38,46 +37,5 @@ window.addEventListener('click', () => {
 })
 
 
-// this functions are not implementing well callback
-// since I noticed buffer is not ready when calling
-function playBuffer(buffer, callback){
-  sourceNode = audioCtx.createBufferSource();
-  sourceNode.buffer = buffer;
-  //console.log(sourceNode.buffer.getChannelData(0)) //raw PCM data
-  sourceNode.connect(analyserNode);
-  analyserNode.connect(audioCtx.destination)
 
-  sourceNode.start(0); //play
-  sourceNode.onended = function(event) {
-    callback();
-  }
-
-}
-
-// this functions are not implementing well callback
-// since I noticed buffer is not ready when calling
-function getFFT(buffer, callback, fftSize=2048){//2048
-  sourceNode = audioCtx.createBufferSource();
-  sourceNode.buffer = buffer;
-  //console.log(sourceNode.buffer.getChannelData(0)) //raw PCM data
-  sourceNode.connect(analyserNode);
-  analyserNode.connect(audioCtx.destination) // to output sound on speakers
-
-  sourceNode.start(0); //play
-  //onened, buffer will be ready to be read
-  sourceNode.onended = function(event) {
-    //fftSize : 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768
-    analyserNode.fftSize = fftSize//2048;//512
-    var freqs = new Uint8Array(analyserNode.frequencyBinCount); // len = fftSize/2
-    analyserNode.getByteFrequencyData(freqs);
-    //Freq bands are splited equaly
-    //freq_n = n * (samplerate/fftSize) = n * (44100/2048) = n * 21.533 Hz
-    // BW = 21.533 Hz  - 22050 Hz
-    //drawFreqBars(freqs, sourceNode.buffer.sampleRate, analyserNode.fftSize)
-    callback(freqs);
-  }
-}
-
-
-
-// }
+// } // window.onload 
