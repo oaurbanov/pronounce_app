@@ -17,19 +17,23 @@ const recordAudio = () =>
     const stop = () =>
       new Promise(resolve => {
         mediaRecorder.addEventListener("stop", () => {
+          // Stop streaming
+          stream.getTracks().forEach( (track) => {
+            if (track.readyState == 'live' && track.kind === 'audio') {
+                track.stop();
+            }
+          });
           const audioBlob = new Blob(audioChunks)
           const audioUrl = URL.createObjectURL(audioBlob);
           const audio = new Audio(audioUrl);
           const play = () => audio.play()
+          console.log('stoping')
           resolve({ audioBlob, audioUrl, play})
         });
         mediaRecorder.stop()
       });
 
-    //painting good, not blocking call :)
-    paintOnCanvas(stream)
-
-    resolve({start, stop})
+    resolve({start, stop, stream})
 });
 
 function paintOnCanvas(stream){
@@ -54,11 +58,20 @@ function paintOnCanvas(stream){
 
   var h = 0
   var hMax =  melLog(2+ (LEN*sr_f) -1)
-  var delta_x = 1
+  var delta_x = 5
 
 
   function loop() {
-    window.requestAnimationFrame(loop);
+
+    let streamEnded = true
+    stream.getTracks().forEach( (track) => {
+      if (track.readyState != 'ended' && track.kind === 'audio') {
+          streamEnded = false
+      }
+    });
+    if (!streamEnded){
+      window.requestAnimationFrame(loop);
+    }
 
     // // 3.  get actual image, clear canvas and put image slided
     // let imgData = CTX.getImageData(1, 0, W - 1, H2);
@@ -86,9 +99,35 @@ function paintOnCanvas(stream){
 }
 
 const recordAndPaint= async (time=1000) => {
+  console.log('recordAndPaint')
   const recorder = await recordAudio();
 
+  //painting good, not blocking call :)
+  paintOnCanvas(recorder.stream)
+
   // // For now I dont need these, just record and paintOnCanvas
+  const recordButton = document.getElementById('record')
+  recordButton.onclick = undefined
+  recordButton.onmousedown = () => {
+    console.log('onmousedown')
+    recorder.start()
+  }
+  recordButton.onmouseup = async () => {
+    console.log('onmouseup')
+    const audio = await recorder.stop()
+    //send to server
+    await sleep(3000)
+    audio.play()
+    await sleep(3000)
+  }
+
+  // recorder.start()
+  // await sleep(time)
+  // const audio = await recorder.stop()
+  // audio.play()
+  // await sleep(time)
+  // recordButton.disable = false
+
   // const recordButton = document.getElementById('record')
   // recordButton.disable = true
   // recorder.start()
@@ -97,6 +136,7 @@ const recordAndPaint= async (time=1000) => {
   // audio.play()
   // await sleep(time)
   // recordButton.disable = false
+
 } 
 
 
@@ -122,7 +162,7 @@ function oldAndSafe_recordAdnPaint() {
     const ffts = new Uint8Array(analyserNode.frequencyBinCount); //fft in binary
 
     //5. paint column for this freqs
-    const KEEP_FREQS = 0.5 // 0.1 first 10% of spectrum = 0-2k
+    const KEEP_FREQS = 0.7 // 0.1 first 10% of spectrum = 0-2k
     const LEN = ffts.length * KEEP_FREQS; // 1024 *0.5 = 512
     console.log(ffts)
 
