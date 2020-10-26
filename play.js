@@ -1,11 +1,11 @@
-const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
-
-function melLog(f){
-  return 2595*Math.log10(1+(f/500))
-}
+let melLog = (f) => 2595*Math.log10(1+(f/500));
+// function melLog(f){
+//   return 2595*Math.log10(1+(f/500))
+// }
 
 async function playAndPaint(){
+  // url = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3'
   // url = 'http://localhost/front/pronounce_app/audio/pourquoi/0000.wav' //scale(7), 0000(0.7), redhot(30)
   url = 'http://localhost/front/pronounce_app/0000.wav' //scale(7), 0000(0.7), redhot(30)
   var request = new XMLHttpRequest();

@@ -1,12 +1,17 @@
 // window.onload = function() {
 
 
-console.log("hello world 6")
+console.log("hello world 7")
 
 const canvas = document.getElementById('cv1');
 const W = canvas.width
 const H = canvas.height
 const ctx = canvas.getContext('2d');
+
+const cv2 = document.getElementById('cv2')
+const W2 = cv2.width
+const H2 = cv2.height
+const ctx2 = cv2.getContext('2d')
 
 
 // ctx.fillStyle = 'hsl(280, 100%, 10%)'; // 280= purple, saturation, light

@@ -18,46 +18,45 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">     -->
 	<style type="text/css">
-		#cv1 {
+		#cv1, #cv2 {
 			background: #f0f0f0;
 		}
 	</style>
 
-<script type="text/javascript" src="pre_main.js"></script>
+<script type="text/javascript" src="play.js"></script>
+<script type="text/javascript" src="record.js"></script>
 
 </head>
 <body>
-	<h1 style="text-align:center"> title </h1>
+	<h1 style="text-align:center"> P app </h1>
+
+    <!-- <audio controls> -->
+      <!-- window.location.hostname = localhost-->
+      <!-- <source src="http://localhost/front/pronounce_app/0000.wav" type="audio/wav" crossorigin="anonymous" > -->
+        <!-- Your browser does not support the audio element. -->
+    <!-- </audio> -->
+
+    <!-- <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous" ></audio> -->
 
 	<div class="row">
-		<h3> pourquoi </h3>
-		<canvas id="cv1" width="600" height="400">
-			
-		</canvas>
-		<br>
-		<button type="" id="play1" onclick="init()"></button>
-
-
-		<!-- <audio controls> -->
-			<!-- window.location.hostname = localhost-->
-		  <!-- <source src="http://localhost/front/pronounce_app/0000.wav" type="audio/wav" crossorigin="anonymous" > -->
-	  	  <!-- Your browser does not support the audio element. -->
-		<!-- </audio> -->
-
-<!--     <button type="" id="play2" onclick="playAndPaint('http://localhost/front/pronounce_app/0000.wav')"></button>
- -->    <button type="" id="play2" onclick="playAndPaint()"></button>
-
-
-  <!-- <button type="" id="play2" onclick="init2('https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3')"></button> -->
-
-<!-- 		<audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous" ></audio>
- -->
+		<h3> Pourquoi </h3>
+    <br>
+    <button type="" id="play" onclick="playAndPaint()"></button>
+    <br>
+		<canvas id="cv1" width="600" height="400"></canvas>
 	</div>
 
-<div class="row">
-<h3> here chart FFT </h3>
-<canvas id="myChart" width="600" height="400" ></canvas>
-</div>
+  <div class="row">
+  <h5> record </h5>
+    <br>
+    <button type="" id="record" onclick="recordAndPaint()"></button>
+    <br>
+    <canvas id="cv2" width="600" height="400"></canvas>
+  </div>
+
+  <div class="row">
+    <canvas id="myChart" width="600" height="400" ></canvas>
+  </div>
 
 </body>
 <script type="text/javascript" src="main.js"></script>
