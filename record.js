@@ -5,36 +5,34 @@ const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 const recordAudio = () =>
   new Promise( async resolve => {
     const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-    // const mediaRecorder = new MediaRecorder(stream);
-    // const audioChunks = [];
+    const mediaRecorder = new MediaRecorder(stream);
+    const audioChunks = [];
 
-    // mediaRecorder.ondataavailable = (event) => {
-    //   // console.log(event.data) //14562
-    //   audioChunks.push(event.data)
-    // }
+    mediaRecorder.ondataavailable = (event) => {
+      // console.log(event.data) //14562
+      audioChunks.push(event.data)
+    }
 
-    // const start = () => mediaRecorder.start()
-    // const stop = () =>
-    //   new Promise(resolve => {
-    //     mediaRecorder.addEventListener("stop", () => {
-    //       const audioBlob = new Blob(audioChunks)
-    //       const audioUrl = URL.createObjectURL(audioBlob);
-    //       const audio = new Audio(audioUrl);
-    //       const play = () => audio.play()
-    //       resolve({ audioBlob, audioUrl, play})
-    //     });
-    //     mediaRecorder.stop()
-    //   });
+    const start = () => mediaRecorder.start()
+    const stop = () =>
+      new Promise(resolve => {
+        mediaRecorder.addEventListener("stop", () => {
+          const audioBlob = new Blob(audioChunks)
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+          const play = () => audio.play()
+          resolve({ audioBlob, audioUrl, play})
+        });
+        mediaRecorder.stop()
+      });
 
-    //here process(stream) like spec, to paint cv2
-    //(maybe I cannot consume stream in 2 different points :S)
-    paint(stream)
+    //painting good, not blocking call :)
+    paintOnCanvas(stream)
 
-    resolve => {}
-    // resolve({start, stop})
+    resolve({start, stop})
 });
 
-function paint(stream){
+function paintOnCanvas(stream){
   console.log(stream)
   const audioSourceNode = audioCtx.createMediaStreamSource(stream);
   audioSourceNode.connect(analyserNode)
@@ -43,7 +41,7 @@ function paint(stream){
   // 2. get FTT
 
   var fft_size = 8192 // 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768
-  audioSourceNode.fftsize = fft_size
+  analyserNode.fftsize = fft_size
   const ffts = new Uint8Array(analyserNode.frequencyBinCount); //fft in binary
 
   //5. paint column for this freqs
@@ -51,7 +49,7 @@ function paint(stream){
   const LEN = ffts.length * KEEP_FREQS; // 1024 *0.5 = 512
 
   var x = 0 
-  var sr = 44100//stream.sampleRate
+  var sr = 44100//stream.sampleRate //TODO find out sample rate
   var sr_f = sr/fft_size
 
   var h = 0
@@ -81,12 +79,16 @@ function paint(stream){
       ctx2.fillRect(x, H2-last_h, (x)- x+delta_x, (H2-last_h)- H2-h )
     }
     x += delta_x
+    if (x >= W2) 
+      x=0
   }
   loop();
 }
 
 const recordAndPaint= async (time=1000) => {
   const recorder = await recordAudio();
+
+  // // For now I dont need these, just record and paintOnCanvas
   // const recordButton = document.getElementById('record')
   // recordButton.disable = true
   // recorder.start()
