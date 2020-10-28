@@ -54,7 +54,7 @@ const paintColumn = (x, delta_x, ffts, sr, fft_size) =>
 async function playAndPaint(){
   // url = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3'
   // url = 'http://localhost/front/pronounce_app/audio/pourquoi/0000.wav' //scale(7), 0000(0.7), redhot(30)
-  url = 'http://localhost/front/pronounce_app/0000.wav' //scale(7), 0000(0.7), redhot(30)
+  url = 'http://localhost/front/pronounce_app/audio/0000.wav' //scale(7), 0000(0.7), redhot(30)
   var request = new XMLHttpRequest();
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';

@@ -49,7 +49,8 @@ function paintOnCanvas(stream){
   const ffts = new Uint8Array(analyserNode.frequencyBinCount); //fft in binary
 
   //5. paint column for this freqs
-  const KEEP_FREQS = 0.7 // 0.1 first 10% of spectrum = 0-2k
+  const MIC_CALIBRATION = 1 //should be 1 for a good microphone
+  const KEEP_FREQS = 0.7*MIC_CALIBRATION // 0.1 first 10% of spectrum = 0-2k
   const LEN = ffts.length * KEEP_FREQS; // 1024 *0.5 = 512
 
   var x = 0 

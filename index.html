@@ -17,17 +17,21 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">     -->
-	<style type="text/css">
-		#cv1, #cv2 {
-			background: #f0f0f0;
-		}
-	</style>
-
+<link rel="stylesheet" type="text/css" href="./js/style.css">
 
 
 </head>
 <body>
-	<h1 style="text-align:center"> Pronounce app </h1>
+
+
+<div class="header">
+  <a href="#default" class="logo">Pronounce app</a>
+  <div class="header-right">
+    <a class="active" href="#home">Home</a>
+    <a href="#contact">Contact</a>
+    <a href="#about">About</a>
+  </div>
+</div>
 
     <!-- <audio controls> -->
       <!-- window.location.hostname = localhost-->
@@ -37,30 +41,43 @@
 
     <!-- <audio src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3" crossorigin="anonymous" ></audio> -->
 
-	<div class="row">
-		<h3> Pourquoi </h3>
-    <br>
-    <button type="" id="play" onclick="playAndPaint()"></button>
-    <br>
-		<canvas id="cv1" width="600" height="400"></canvas>
-	</div>
+  <main>
+    <section class="presentation">
 
-  <div class="row">
-  <h5> record </h5>
-    <br>
-    <button type="" id="record" onclick="recordAndPaint()"></button>
-    <br>
-    <canvas id="cv2" width="600" height="400"></canvas>
-  </div>
+      <div class="middlespace">
+        <p > a </p>
+      </div>
+
+      <div class="play">
+        <canvas id="cv1" width="600" height="400"></canvas>
+        <br>
+        <P> "pourquoi" </P>
+        <button class="cta" type="" id="play" onclick="playAndPaint()"> play </button>
+        <br>
+      </div>
+
+      <div class="middlespace">
+        <p > a </p>
+      </div>
+
+      <div class="record">
+        <canvas id="cv2" width="600" height="400"></canvas>
+        <br>
+        <P> "pourquoi" </P>
+        <button class="cta" type="" id="record" onclick="recordAndPaint()"> record </button>
+        <br>
+      </div>      
+    </section>
+
+  </main>
 
   <div class="row">
     <canvas id="myChart" width="600" height="400" ></canvas>
   </div>
 
 </body>
-<script type="text/javascript" src="main.js"></script>
-<script type="text/javascript" src="play.js"></script>
-<script type="text/javascript" src="record.js"></script>
-<script type="text/javascript" src="slice.js"></script>
-<script type="text/javascript" src="utils.js"></script>
+<script type="text/javascript" src="./js/main.js"></script>
+<script type="text/javascript" src="./js/play.js"></script>
+<script type="text/javascript" src="./js/record.js"></script>
+<script type="text/javascript" src="./js/utils.js"></script>
 </html>
