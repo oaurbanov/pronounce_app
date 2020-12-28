@@ -59,7 +59,7 @@ function paintOnCanvas(stream){
 
   var h = 0
   var hMax =  melLog(2+ (LEN*sr_f) -1)
-  var delta_x = 5
+  var delta_x = 3
 
 
   function loop() {
